@@ -37,6 +37,7 @@ eval "$(thefuck --alias)"
 alias deac='deactivate'
 alias vim='nvim'
 alias sso='aws sso login'
+alias cc='claude'
 
 # alias for source venv/bin/activate (uv shell) like (poetry shell)
 uv() {
