@@ -1,10 +1,3 @@
-# show a dev tip
-/resources/show_dev_tip.sh
-
-# super cli
-alias st='/home/coder/.pyenv/versions/3.11.12/bin/python /workspace/devops/st.py'
-alias super='/home/coder/.pyenv/versions/3.11.12/bin/super'
-
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
