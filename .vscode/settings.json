@@ -1,0 +1,226 @@
+{
+  // 🔧 Remote SSH Setup
+  "remote.SSH.remotePlatform": {
+    "coder-vscode--albertyang--snapcommerce-backend": "linux",
+    "coder-vscode.coder.superinc.net--albertyang--snapcommerce-backend": "linux",
+    "coder-vscode.coder.superinc.net--albertyang--workspace-two": "linux",
+    "coder-vscode.coder.superinc.net--albertyang--workspace-three": "linux",
+    "coder-vscode.coder.superinc.net--albertyang--series-iv": "linux",
+    "coder-vscode.coder.superinc.net--albertyang--series-v": "linux",
+    "coder-vscode.coder.superinc.net--albertyang--series-v.main": "linux"
+  },
+  "remote.SSH.connectTimeout": 1800,
+  "remote.SSH.defaultExtensions": [
+    "anthropic.claude-code",
+    "anysphere.cursorpyright",
+    "charliermarsh.ruff",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "ecmel.vscode-html-css",
+    "esbenp.prettier-vscode",
+    "ms-playwright.playwright",
+    "ms-python.black-formatter",
+    "ms-python.debugpy",
+    "ms-python.flake8",
+    "ms-python.isort",
+    "ms-python.mypy-type-checker",
+    "ms-python.python",
+    "ms-vscode.vscode-typescript-next",
+    "subframe7536.custom-ui-style",
+    "vscodevim.vim",
+  ],
+
+  // Disable auto updates
+  // "update.enableWindowsBackgroundUpdates": false,
+  // "update.mode": "none",
+
+  // 💻 Terminal
+  "terminal.external.osxExec": "Warp.app",
+  // "terminal.integrated.fontFamily": "DankMono Nerd Font Mono",
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.linux": "zsh",
+
+  // 🐍 Python
+  "[python]": {
+    "diffEditor.ignoreTrimWhitespace": false
+  },
+  "python.languageServer": "None",
+
+  // 🧠 Git
+  "git.terminalAuthentication": false,
+  "git.useIntegratedAskPass": false,
+  "git.openRepositoryInParentFolders": "never",
+
+  // 💡 Editor Behavior
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "Hack Nerd Font Propo",
+  "editor.fontSize": 16,
+  "editor.lineNumbers": "relative",
+  "editor.scrollbar.horizontal": "hidden",
+  "editor.scrollbar.vertical": "hidden",
+
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+
+  // 🧹 File Handling
+  // "files.insertFinalNewline": true,
+  // "files.trimFinalNewlines": true,
+
+  // 🧠 Diff & Debug
+  "diffEditor.renderSideBySide": false,
+  "debug.onTaskErrors": "debugAnyway",
+
+  // 🗂️ Explorer & Nesting
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.cts": "${capture}.typegen.ts",
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.mts": "${capture}.typegen.ts",
+    "*.ts": "${capture}.js, ${capture}.typegen.ts",
+    "*.tsx": "${capture}.ts, ${capture}.typegen.ts",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb",
+    "tsconfig.json": "tsconfig.*.json"
+  },
+  "explorer.compactFolders": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+
+  // 🎨 Theme & Icons
+  "workbench.colorTheme": "Catppuccin Frappé",
+  "workbench.iconTheme": "catppuccin-frappe",
+  "workbench.colorCustomizations": {
+    "sideBar.background": "#303546",
+    "titleBar.activeBackground": "#303546",
+    "titleBar.inactiveBackground": "#303546",
+    "tab.border": "#00000000",
+    "tab.activeModifiedBorder": "#00000000",
+    "tab.inactiveModifiedBorder": "#00000000",
+    "tab.inactiveBackground": "#00000000",
+    "tab.lastPinnedBorder": "#00000000",
+    "editorGroupHeader.tabsBackground": "#303546",
+  },
+
+  // 🌿 Catppuccin Icons
+  "catppuccin-icons.hidesExplorerArrows": true,
+
+  // 🧘 Zen Mode
+  "zenMode.fullScreen": false,
+  "zenMode.hideStatusBar": false,
+  "zenMode.hideLineNumbers": false,
+
+  // 🪟 Window UI
+  "window.commandCenter": false,
+  "window.customTitleBarVisibility": "never",
+  "window.titleBarStyle": "native",
+
+  // 🌟 Workbench Layout
+  "workbench.editor.tabActionCloseVisibility": false,
+  "workbench.layoutControl.enabled": false,
+  "workbench.tree.indent": 16,
+  "workbench.tree.renderIndentGuides": "none",
+  "breadcrumbs.enabled": true,
+
+  // 🧠 Cursor-specific
+  "cursor.cpp.enablePartialAccepts": true,
+  "cursor.cmdk.autoSelect": false,
+
+  // 🎨 Custom UI Style
+  "custom-ui-style.font.sansSerif": "Dank Mono",
+  "custom-ui-style.electron": {
+    "titleBarStyle": "hiddenInset",
+    "trafficLightPosition": {
+      "x": 20,
+      "y": 12
+    }
+  },
+  "custom-ui-style.stylesheet": {
+    ".notification-toast": "box-shadow: none !important",
+    ".quick-input-widget.show-file-icons": "box-shadow: none !important",
+    ".quick-input-widget": "top: 25vh !important",
+    // ".quick-input-list .scrollbar": "display: none",
+    ".editor-widget.find-widget": "box-shadow: none; border-radius: 4px",
+    ".quick-input-titlebar": "background: #100B15 !important",
+    // ".monaco-workbench .part.editor > .content .editor-group-container > .title.title-border-bottom:after": "display: none",
+    // ".monaco-scrollable-element > .shadow.top": "display: none",
+    ".sidebar .title-label": "padding: 0 !important",
+    ".sidebar": "border: none !important",
+    ".monaco-workbench .monaco-list:not(.element-focused):focus:before": "outline: none !important",
+    ".monaco-list-row.focused": "outline: none !important",
+    // ".monaco-editor .scroll-decoration": "display: none",
+    ".title.show-file-icons .label-container .monaco-icon-label.file-icon": "justify-content: center; padding: 0 !important",
+    ".title .monaco-icon-label:after": "margin-right: 0",
+    ".monaco-workbench:not(:has(.split-view-view.visible > .part.sidebar.left)) .editor-group-container:first-child .tabs-container": "margin-left: 85px !important",
+    // ".monaco-action-bar > .actions-container[aria-label=\"Editor actions\"]": "display: none !important",
+    ".sidebar, .pane, .composite": "font-size: 16px !important",
+    ".cursor-chat-root": "font-size: 16px !important",
+    ".quick-input-widget, .quick-input-widget .monaco-inputbox, .quick-input-list": "font-size: 16px !important"
+  },
+
+  // ⚡ Vim
+  "vim.leader": "<Space>",
+  "vim.easymotion": true,
+  "vim.smartRelativeLine": true,
+  "vim.useSystemClipboard": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    { "before": ["<S-h>"], "commands": [":bprevious"] },
+    { "before": ["<S-l>"], "commands": [":bnext"] },
+    { "before": ["leader", "v"], "commands": [":vsplit"] },
+    { "before": ["leader", "s"], "commands": [":split"] },
+    {
+      "before": ["leader", "h"],
+      "commands": ["workbench.action.focusLeftGroup"]
+    },
+    {
+      "before": ["leader", "j"],
+      "commands": ["workbench.action.focusBelowGroup"]
+    },
+    {
+      "before": ["leader", "k"],
+      "commands": ["workbench.action.focusAboveGroup"]
+    },
+    {
+      "before": ["leader", "l"],
+      "commands": ["workbench.action.focusRightGroup"]
+    },
+    {
+      "before": ["g", "y"],
+      "commands": ["editor.action.goToTypeDefinition"]
+    },
+    {
+      "before": ["leader", "v", "h"],
+      "commands": ["editor.action.showHover"]
+    }
+    {
+      "before": ["leader", "r", "e"],
+      "commands": ["editor.action.rename"]
+    }
+  ],
+  "vim.visualModeKeyBindings": [
+    { "before": ["<"], "commands": ["editor.action.outdentLines"] },
+    { "before": [">"], "commands": ["editor.action.indentLines"] },
+    { "before": ["J"], "commands": ["editor.action.moveLinesDownAction"] },
+    { "before": ["K"], "commands": ["editor.action.moveLinesUpAction"] },
+    { "before": ["leader", "c"], "commands": ["editor.action.commentLine"] }
+  ],
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "remote.autoForwardPortsSource": "hybrid",
+  "accessibility.signals.terminalBell": {
+    "sound": "off"
+  },
+  "accessibility.signals.terminalCommandFailed": {
+    "sound": "off"
+  },
+  "accessibility.signals.terminalCommandSucceeded": {
+    "sound": "off"
+  },
+  "accessibility.signals.terminalQuickFix": {
+    "sound": "off"
+  },
+  "accessibility.signalOptions.volume": 0
+}

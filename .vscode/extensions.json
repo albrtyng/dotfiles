@@ -1,0 +1,19 @@
+{
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "eamodio.gitlens",
+      "ecmel.vscode-html-css",
+      "esbenp.prettier-vscode",
+      "ms-playwright.playwright",
+      "ms-python.black-formatter",
+      "ms-python.debugpy",
+      "ms-python.flake8",
+      "ms-python.isort",
+      "ms-python.mypy-type-checker",
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "ms-vscode.vscode-typescript-next",
+      "subframe7536.custom-ui-style",
+      "vscodevim.vim"
+    ]
+}
