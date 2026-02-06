@@ -1,15 +1,5 @@
 {
   // 🔧 Remote SSH Setup
-  "remote.SSH.remotePlatform": {
-    "coder-vscode--albertyang--snapcommerce-backend": "linux",
-    "coder-vscode.coder.superinc.net--albertyang--snapcommerce-backend": "linux",
-    "coder-vscode.coder.superinc.net--albertyang--workspace-two": "linux",
-    "coder-vscode.coder.superinc.net--albertyang--workspace-three": "linux",
-    "coder-vscode.coder.superinc.net--albertyang--series-iv": "linux",
-    "coder-vscode.coder.superinc.net--albertyang--series-v": "linux",
-    "coder-vscode.coder.superinc.net--albertyang--series-v.main": "linux"
-  },
-  "remote.SSH.connectTimeout": 1800,
   "remote.SSH.defaultExtensions": [
     "anthropic.claude-code",
     "anysphere.cursorpyright",
