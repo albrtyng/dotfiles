@@ -4,11 +4,11 @@ return {
     dependencies = { "folke/snacks.nvim" },
     opts = {
       terminal = {
-        split_side = "right",
-        split_width_percentage = 0.30,
         snacks_win_opts = {
-          position = "bottom",
-          height = 0.30,
+          position = "float",
+          width = 0.80,
+          height = 0.80,
+          border = "rounded",
         },
       },
       diff_opts = {
