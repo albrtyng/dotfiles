@@ -1,6 +1,9 @@
 # local bin (claude-code, etc.)
 export PATH="$HOME/.local/bin:$PATH"
 
+# nix
+[ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ] && . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -64,6 +67,9 @@ alias y='yazi'
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 alias oc='opencode'
+
+# claudecode.nvim: wrap make with nix dev shell
+alias ccmake='nix develop .#ci -c make'
 
 # alias for source venv/bin/activate (uv shell) like (poetry shell)
 uv() {
