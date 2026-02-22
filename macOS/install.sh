@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# --- Auto-detect dotfiles directory ---
+DOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # --- Helpers ---
 log()   { echo "[INFO] $*"; }
 warn()  { echo "[WARN] $*"; }
 error() { echo "[ERROR] $*"; exit 1; }
-
-# --- Auto-detect dotfiles directory ---
-DOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # --- Package Install (via Homebrew) ---
 install_package() {
@@ -22,29 +22,6 @@ install_package() {
   fi
 }
 
-# --- Homebrew Setup ---
-setup_homebrew() {
-  if ! command -v brew >/dev/null 2>&1; then
-    log "Installing Homebrew..."
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  else
-    log "Homebrew already installed."
-  fi
-
-  # Add brew to PATH for the rest of this script
-  if [[ -f /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [[ -f /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  fi
-}
-
-# --- Shell Setup (verify zsh exists) ---
-setup_shell() {
-  log "Verifying zsh..."
-  command -v zsh >/dev/null 2>&1 || error "zsh not found (should ship with macOS)"
-}
-
 # --- Symlinking ---
 symlink_file() {
   local source="$1"
@@ -54,7 +31,7 @@ symlink_file() {
     log "$(basename "$target") already symlinked."
   elif [[ -e "$target" ]]; then
     log "Replacing existing $(basename "$target")"
-    rm -f "$target"
+    rm -rf "$target"
     ln -s "$source" "$target"
   else
     log "Symlinking $(basename "$target")"
@@ -62,23 +39,35 @@ symlink_file() {
   fi
 }
 
+# --- Homebrew Setup ---
+setup_homebrew() {
+  if ! command -v brew >/dev/null 2>&1; then
+    log "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  else
+    log "Homebrew already installed."
+  fi
+}
+
+# --- Shell Setup (verify zsh exists) ---
+setup_shell() {
+  log "Verifying zsh..."
+  command -v zsh >/dev/null 2>&1 || error "zsh not found (should ship with macOS)"
+}
+
 # --- Oh My Zsh ---
 setup_ohmyzsh() {
   local omz="$HOME/.oh-my-zsh"
   if [[ ! -d "$omz" ]]; then
     log "Installing Oh My Zsh..."
-    (cd "$HOME" && sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended)
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
   else
     log "Oh My Zsh already installed."
   fi
 
   local omz_custom="${omz}/custom"
-  if [[ ! -d "$omz_custom" ]]; then
-    log "Creating Oh My Zsh custom directory..."
-    mkdir -p "$omz_custom"
-  else
-    log "Oh My Zsh custom directory already exists."
-  fi
+  mkdir -p "$omz_custom"
 
   local zsh_autosuggestions_dir="${ZSH_CUSTOM:-$omz_custom}/plugins/zsh-autosuggestions"
   if [[ ! -d "$zsh_autosuggestions_dir" ]]; then
@@ -107,20 +96,45 @@ setup_ohmyzsh() {
 
 # --- Starship Setup ---
 setup_starship() {
-  log "Setting up Starship prompt..."
-  STARSHIP_DIR="$HOME/.config/starship"
-  mkdir -p "$STARSHIP_DIR"
-
   install_package starship
+  mkdir -p "$HOME/.config/starship"
+
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+  symlink_file "$dotdir_root/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
+  log "Linked starship.toml"
 }
 
 # --- Nvim Setup ---
 setup_nvim() {
   log "Setting up Nvim..."
-  NVIM_DIR="$HOME/.config/nvim"
-  mkdir -p "$NVIM_DIR"
-
   install_package neovim nvim
+
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+  if [[ -d "$HOME/.config/nvim" && ! -L "$HOME/.config/nvim" ]]; then
+    log "Backing up existing nvim config..."
+    mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak.$(date +%s)"
+  fi
+  symlink_file "$dotdir_root/.config/nvim" "$HOME/.config/nvim"
+  log "Linked nvim config"
+}
+
+# --- Tmux Setup ---
+setup_tmux() {
+  install_package tmux
+
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+  local tpm_dir="$HOME/.tmux/plugins/tpm"
+  if [[ ! -d "$tpm_dir" ]]; then
+    log "Installing TPM (Tmux Plugin Manager)..."
+    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+  else
+    log "TPM already installed."
+  fi
+  symlink_file "$dotdir_root/.tmux.conf" "$HOME/.tmux.conf"
+  log "Linked .tmux.conf"
 }
 
 # --- nvm setup ---
@@ -143,37 +157,118 @@ setup_nvm() {
   fi
 }
 
-# --- Dotfiles Symlinks ---
-setup_dotfiles() {
-  local dotdir_root
-  dotdir_root="$(dirname "$DOTDIR")"
-
-  symlink_file "$DOTDIR/.zshrc" "$HOME/.zshrc"
-  symlink_file "$dotdir_root/.gitconfig" "$HOME/.gitconfig"
-  symlink_file "$dotdir_root/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
-  symlink_file "$dotdir_root/.config/nvim/init.vim" "$HOME/.config/nvim/init.vim"
-  symlink_file "$dotdir_root/.config/atuin/config.toml" "$HOME/.config/atuin/config.toml"
-}
-
 # --- Dev Tools ---
 setup_tools() {
   install_package fzf
   install_package fd
   install_package ripgrep rg
+  install_package lazygit
+  install_package thefuck
+  install_package zoxide
 
-  ATUIN_DIR="$HOME/.config/atuin"
-  mkdir -p "$ATUIN_DIR"
+  mkdir -p "$HOME/.config/atuin"
   if ! command -v atuin >/dev/null 2>&1; then
     log "Installing atuin..."
     curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
   else
     log "atuin already installed."
   fi
+  cat > "$HOME/.config/atuin/config.toml" <<'EOF'
+enter_accept = true
+EOF
+  log "Wrote atuin config"
+}
 
-  install_package zoxide
-  install_package lazygit
-  install_package thefuck
-  install_package glab
+# --- New CLI Tools ---
+setup_new_tools() {
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+
+  install_package bat
+  mkdir -p "$HOME/.config/bat/themes"
+  symlink_file "$dotdir_root/.config/bat/themes/Catppuccin Frappe.tmTheme" "$HOME/.config/bat/themes/Catppuccin Frappe.tmTheme"
+  bat cache --build
+  log "Linked bat theme"
+
+  install_package eza
+  install_package git-delta delta
+  install_package btop
+
+  if command -v npm >/dev/null 2>&1 && ! command -v tldr >/dev/null 2>&1; then
+    log "Installing tldr..."
+    npm install -g tldr
+  else
+    log "tldr already installed or npm not available."
+  fi
+
+  install_package yazi
+}
+
+# --- Git Config ---
+setup_git() {
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+
+  mkdir -p "$HOME/.config/delta"
+  symlink_file "$dotdir_root/.config/delta/catppuccin.gitconfig" "$HOME/.config/delta/catppuccin.gitconfig"
+  symlink_file "$dotdir_root/.gitconfig" "$HOME/.gitconfig"
+  log "Linked git config and delta theme"
+}
+
+# --- Ghostty ---
+setup_ghostty() {
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+
+  local ghostty_dir="$HOME/Library/Application Support/com.mitchellh.ghostty"
+  mkdir -p "$ghostty_dir"
+  symlink_file "$dotdir_root/.config/ghostty/config" "$ghostty_dir/config"
+  log "Linked Ghostty config"
+}
+
+# --- OpenCode ---
+setup_opencode() {
+  if ! command -v opencode >/dev/null 2>&1; then
+    log "Installing opencode..."
+    curl -sL opencode.ai/install | bash
+  else
+    log "opencode already installed."
+  fi
+}
+
+# --- Ruler ---
+setup_ruler() {
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+
+  if command -v npm >/dev/null 2>&1 && ! command -v ruler >/dev/null 2>&1; then
+    log "Installing @intellectronica/ruler..."
+    npm install -g @intellectronica/ruler || error "Failed to install ruler"
+  else
+    log "ruler already installed or npm not available."
+  fi
+  if [[ -d "$dotdir_root/.ruler" ]]; then
+    symlink_file "$dotdir_root/.ruler" "$HOME/.ruler"
+    log "Linked ruler config"
+  fi
+}
+
+ruler_apply() {
+  if command -v ruler >/dev/null 2>&1; then
+    log "Applying ruler rules..."
+    ruler apply --config "$HOME/.ruler/ruler.toml" --project-root "$HOME" || warn "Failed to apply ruler rules"
+  else
+    warn "ruler not installed, skipping apply"
+  fi
+}
+
+# --- Dotfiles Symlinks ---
+setup_dotfiles() {
+  local dotdir_root
+  dotdir_root="$(dirname "$DOTDIR")"
+
+  symlink_file "$DOTDIR/.zshrc" "$HOME/.zshrc"
+  symlink_file "$dotdir_root/.config/atuin/config.toml" "$HOME/.config/atuin/config.toml"
 }
 
 # --- Claude Code ---
@@ -195,8 +290,16 @@ main() {
   setup_nvim
   setup_nvm
   setup_tools
+  setup_tmux
+  setup_new_tools
+  setup_git
+  setup_ruler
   setup_claude
+  setup_opencode
   setup_dotfiles
+  setup_ghostty
+
+  ruler_apply
 
   # Set zsh as default shell if not already
   if [[ "$SHELL" != "$(command -v zsh)" ]]; then

@@ -52,7 +52,7 @@ setup_ohmyzsh() {
   else
     log "Oh My Zsh already installed."
   fi
-  
+
   local omz_custom="${omz}/custom"
   if [[ ! -d "$omz_custom" ]]; then
     log "Creating Oh My Zsh custom directory..."
@@ -94,11 +94,7 @@ setup_starship() {
 
   if ! command -v starship >/dev/null 2>&1; then
     log "Installing Starship prompt..."
-    if command -v curl >/dev/null 2>&1; then
-      curl -sS https://starship.rs/install.sh | sh -s -- -y || error "Failed to install Starship prompt."
-    else
-      error "curl is required to install Starship prompt."
-    fi
+    curl -sS https://starship.rs/install.sh | sh -s -- -y || error "Failed to install Starship prompt."
   else
     log "Starship prompt is already installed."
   fi
@@ -107,10 +103,100 @@ setup_starship() {
 # --- Nvim Setup ---
 setup_nvim() {
   log "Setting up Nvim..."
-  NVIM_DIR="$HOME/.config/nvim"
-  mkdir -p "$NVIM_DIR"
+  if ! command -v nvim >/dev/null 2>&1; then
+    log "Installing neovim via brew..."
+    brew install neovim
+  else
+    log "neovim already installed."
+  fi
+}
 
-  install_package neovim nvim
+# --- Tmux Setup ---
+setup_tmux() {
+  install_package tmux
+  local tpm_dir="$HOME/.tmux/plugins/tpm"
+  if [[ ! -d "$tpm_dir" ]]; then
+    log "Installing TPM (Tmux Plugin Manager)..."
+    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+  else
+    log "TPM already installed."
+  fi
+}
+
+# --- New CLI Tools ---
+setup_new_tools() {
+  install_package bat batcat
+  batcat cache --build
+
+  if ! command -v eza >/dev/null 2>&1; then
+    log "Installing eza..."
+    brew install eza
+  else
+    log "eza already installed."
+  fi
+
+  if ! command -v delta >/dev/null 2>&1; then
+    log "Installing delta..."
+    brew install git-delta
+  else
+    log "delta already installed."
+  fi
+
+  if ! command -v btop >/dev/null 2>&1; then
+    log "Installing btop..."
+    brew install btop
+  else
+    log "btop already installed."
+  fi
+
+  if command -v npm >/dev/null 2>&1 && ! command -v tldr >/dev/null 2>&1; then
+    log "Installing tldr..."
+    npm install -g tldr
+  else
+    log "tldr already installed or npm not available."
+  fi
+
+  if ! command -v yazi >/dev/null 2>&1; then
+    log "Installing yazi..."
+    brew install yazi
+  else
+    log "yazi already installed."
+  fi
+}
+
+# --- Ghostty terminfo ---
+setup_ghostty() {
+  log "Setting up Ghostty terminfo..."
+  local dotdir="$HOME/.config/coderv2/dotfiles"
+  if [[ -f "$dotdir/xterm-ghostty.terminfo" ]]; then
+    tic -x "$dotdir/xterm-ghostty.terminfo"
+    log "Ghostty terminfo installed."
+  else
+    warn "xterm-ghostty.terminfo not found, skipping."
+  fi
+}
+
+# --- OpenCode ---
+setup_opencode() {
+  if ! command -v opencode >/dev/null 2>&1; then
+    log "Installing opencode..."
+    curl -sL opencode.ai/install | bash
+  else
+    log "opencode already installed."
+  fi
+}
+
+# --- D-Bus / gnome-keyring for headless credential storage ---
+setup_credentials() {
+  install_package libsecret-1-dev
+  install_package dbus-x11
+  install_package gnome-keyring
+
+  if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+    log "Starting D-Bus session for credential storage..."
+    eval "$(dbus-launch --sh-syntax)"
+  fi
+  echo '' | gnome-keyring-daemon --unlock --components=secrets 2>/dev/null || warn "Failed to unlock gnome-keyring"
 }
 
 # --- nvm setup ---
@@ -133,7 +219,6 @@ setup_nvm() {
   fi
 }
 
-
 # --- Dotfiles Symlinks ---
 setup_dotfiles() {
   local dotdir="$HOME/.config/coderv2/dotfiles"
@@ -141,9 +226,15 @@ setup_dotfiles() {
   symlink_file "$dotdir/.zshrc" "$HOME/.zshrc"
   symlink_file "$dotdir/.gitconfig" "$HOME/.gitconfig"
   symlink_file "$dotdir/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
-  symlink_file "$dotdir/.config/nvim/init.vim" "$HOME/.config/nvim/init.vim"
+  [[ -d "$HOME/.config/nvim" && ! -L "$HOME/.config/nvim" ]] && rm -rf "$HOME/.config/nvim"
+  symlink_file "$dotdir/.config/nvim" "$HOME/.config/nvim"
+  mkdir -p "$HOME/.config/bat"
+  symlink_file "$dotdir/.config/bat/themes" "$HOME/.config/bat/themes"
+  mkdir -p "$HOME/.config/delta"
+  symlink_file "$dotdir/.config/delta/catppuccin.gitconfig" "$HOME/.config/delta/catppuccin.gitconfig"
   symlink_file "$dotdir/.config/atuin/config.toml" "$HOME/.config/atuin/config.toml"
-  symlink_file "$dotdir/.ruler" "/workspace/.ruler"
+  symlink_file "$dotdir/.tmux.conf" "$HOME/.tmux.conf"
+  symlink_file "$dotdir/.ruler" "$HOME/.ruler"
 }
 
 # --- Dev Tools ---
@@ -194,13 +285,6 @@ setup_tools() {
   else
     log "Homebrew already installed."
   fi
-
-  if ! command -v glab >/dev/null 2>&1; then
-    log "Installing glab CLI..."
-    brew install glab
-  else
-    log "glab already installed."
-  fi
 }
 
 setup_ruler() {
@@ -216,7 +300,7 @@ setup_ruler() {
 
 ruler_apply() {
   log "Applying ruler rules..."
-  (cd /workspace && ruler apply --config /workspace/.ruler/ruler.toml) || warn "Failed to apply ruler rules"
+  ruler apply --config "$HOME/.ruler/ruler.toml" --project-root "$HOME" || warn "Failed to apply ruler rules"
 }
 
 setup_claude() {
@@ -228,21 +312,26 @@ setup_claude() {
   else
     log "claude-code already installed."
   fi
-  
+
   log "Setting up Claude Code persistence..."
   mkdir -p "$CLAUDE_DIR"
-  
-  if [[ -d "$HOME/.claude" && ! -L "$HOME/.claude" ]]; then
-    log "Migrating existing Claude data..."
-    rsync -av "$HOME/.claude/" "$CLAUDE_DIR/" 2>/dev/null || true
-    rm -rf "$HOME/.claude"
-  fi
-  
-  if [[ ! -L "$HOME/.claude" ]]; then
+
+  if [[ -L "$HOME/.claude" ]]; then
+    log "Claude symlink already exists."
+  elif [[ -d "$HOME/.claude" ]] && mountpoint -q "$HOME/.claude" 2>/dev/null; then
+    log "$HOME/.claude is a mount point (persisted in cluster), using it directly."
+  elif [[ -d "$HOME/.claude" ]]; then
+    log "Migrating existing $HOME/.claude directory into $CLAUDE_DIR..."
+    rsync -a --ignore-existing "$HOME/.claude/" "$CLAUDE_DIR/"
+    if rm -rf "$HOME/.claude" 2>/dev/null; then
+      ln -s "$CLAUDE_DIR" "$HOME/.claude"
+      log "Migrated and created symlink: $HOME/.claude -> $CLAUDE_DIR"
+    else
+      log "$HOME/.claude cannot be removed (likely mounted), keeping existing directory."
+    fi
+  else
     ln -s "$CLAUDE_DIR" "$HOME/.claude"
     log "Created symlink: $HOME/.claude -> $CLAUDE_DIR"
-  else
-    log "Claude symlink already exists."
   fi
 }
 
@@ -252,11 +341,16 @@ main() {
   setup_shell
   setup_ohmyzsh
   setup_starship
-  setup_nvim
   setup_nvm
   setup_tools
+  setup_nvim
+  setup_tmux
+  setup_new_tools
+  setup_ghostty
+  setup_credentials
   setup_ruler
   setup_claude
+  setup_opencode
   setup_dotfiles
 
   ruler_apply
@@ -264,7 +358,6 @@ main() {
   log "Copying Cursor skills..."
   mkdir -p "$HOME/.cursor/skills-cursor"
   cp -r /workspace/.cursor/skills/* "$HOME/.cursor/skills-cursor/"
-
 
   log "Bootstrap complete ✅"
 

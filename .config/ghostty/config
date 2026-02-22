@@ -1,0 +1,8 @@
+cursor-style = block
+font-size = 18
+theme = Catppuccin Frappe
+macos-option-as-alt = true
+clipboard-read = allow
+
+keybind = cmd+s=text:\x13
+keybind = cmd+escape=text:\x1b[25~

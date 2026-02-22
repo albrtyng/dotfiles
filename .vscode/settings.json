@@ -25,7 +25,6 @@
   // "update.mode": "none",
 
   // 💻 Terminal
-  "terminal.external.osxExec": "Warp.app",
   // "terminal.integrated.fontFamily": "DankMono Nerd Font Mono",
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.defaultProfile.osx": "zsh",

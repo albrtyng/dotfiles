@@ -25,17 +25,22 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # zoxide
-eval "$(zoxide init zsh)"
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
 
 # atuin
-source "$HOME/.atuin/bin/env"
+if [[ -f "$HOME/.atuin/bin/env" ]]; then
+  source "$HOME/.atuin/bin/env"
+fi
 eval "$(atuin init zsh)"
 
 # starship
 export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 eval "$(starship init zsh)"
 
-alias cd='z'
+# navigation
+command -v zoxide &>/dev/null && alias cd='z'
 alias lg='lazygit'
 alias oops='fuck'
 eval "$(thefuck --alias)"
@@ -43,6 +48,22 @@ alias deac='deactivate'
 alias vim='nvim'
 alias sso='aws sso login'
 alias cc='claude'
+
+# bat (syntax-highlighting cat)
+alias cat='bat'
+
+# eza (modern ls)
+alias ls='eza'
+alias ll='eza -l --icons --git'
+alias la='eza -la --icons --git'
+alias lt='eza --tree --icons'
+
+# yazi (terminal file manager)
+alias y='yazi'
+
+# opencode
+export PATH="$HOME/.opencode/bin:$PATH"
+alias oc='opencode'
 
 # alias for source venv/bin/activate (uv shell) like (poetry shell)
 uv() {

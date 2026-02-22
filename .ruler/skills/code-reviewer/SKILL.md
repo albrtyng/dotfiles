@@ -1,21 +1,29 @@
+---
+allowed-tools: Bash(gh pr view:*), Bash(gh pr checkout:*), Bash(gh pr comment:*), Bash(gh api:*)
+---
+
 # Code Reviewer
 
-This skill guides the agent in conducting professional and thorough code reviews for both local development and remote Merge Requests.
+## CLI Requirement
+
+**Use `gh` (GitHub CLI) exclusively.**
+
+This skill guides the agent in conducting professional and thorough code reviews for both local development and remote Pull Requests.
 
 ## Workflow
 
 ### 1. Determine Review Target
-*   **Remote MR**: If the user provides an MR number or URL (e.g., "Review MR !123"), target that remote MR.
-*   **Local Changes**: If no specific MR is mentioned, or if the user asks to "review my changes", target the current local file system states (staged and unstaged changes).
+*   **Remote PR**: If the user provides a PR number or URL (e.g., "Review PR #123"), target that remote PR.
+*   **Local Changes**: If no specific PR is mentioned, or if the user asks to "review my changes", target the current local file system states (staged and unstaged changes).
 
 ### 2. Preparation
 
-#### For Remote MRs:
-1.  **Checkout**: Use the GitLab CLI to checkout the MR.
+#### For Remote PRs:
+1.  **Checkout**: Use the GitHub CLI to checkout the PR.
     ```bash
-    glab mr checkout <MR_NUMBER>
+    gh pr checkout <PR_NUMBER>
     ```
-2.  **Context**: Read the MR description and any existing comments to understand the goal and history.
+2.  **Context**: Read the PR description and any existing comments to understand the goal and history.
 
 #### For Local Changes:
 1.  **Identify Changes**:
@@ -48,5 +56,5 @@ Analyze the code changes based on the following pillars:
 *   Explain *why* a change is requested.
 *   For approvals, acknowledge the specific value of the contribution.
 
-### 5. Cleanup (Remote MRs only)
+### 5. Cleanup (Remote PRs only)
 *   After the review, ask the user if they want to switch back to the default branch (e.g., `main` or `master`).
