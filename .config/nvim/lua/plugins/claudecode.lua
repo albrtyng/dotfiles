@@ -1,6 +1,6 @@
 return {
   {
-    "anthropics/claudecode.nvim",
+    "coder/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     opts = {
       terminal = {
