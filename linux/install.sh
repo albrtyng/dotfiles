@@ -53,37 +53,26 @@ setup_ohmyzsh() {
     log "Oh My Zsh already installed."
   fi
 
-  local omz_custom="${omz}/custom"
-  if [[ ! -d "$omz_custom" ]]; then
-    log "Creating Oh My Zsh custom directory..."
-    mkdir -p "$omz_custom"
-  else
-    log "Oh My Zsh custom directory already exists."
-  fi
+  local omz_custom="${ZSH_CUSTOM:-${omz}/custom}"
+  mkdir -p "$omz_custom"
 
-  local zsh_autosuggestions_dir="${ZSH_CUSTOM:-$omz_custom}/plugins/zsh-autosuggestions"
-  if [[ ! -d "$zsh_autosuggestions_dir" ]]; then
-    log "Installing zsh-autosuggestions..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions.git "$zsh_autosuggestions_dir"
-  else
-    log "zsh-autosuggestions already installed."
-  fi
+  local -A omz_plugins=(
+    [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions.git"
+    [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    [you-should-use]="https://github.com/MichaelAquilina/zsh-you-should-use.git"
+  )
 
-  local zsh_syntax_highlighting_dir="${ZSH_CUSTOM:-$omz_custom}/plugins/zsh-syntax-highlighting"
-  if [[ ! -d "$zsh_syntax_highlighting_dir" ]]; then
-    log "Installing zsh-syntax-highlighting..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_syntax_highlighting_dir"
-  else
-    log "zsh-syntax-highlighting already installed."
-  fi
-
-  local you_should_use_dir="${ZSH_CUSTOM:-$omz_custom}/plugins/you-should-use"
-  if [[ ! -d "$you_should_use_dir" ]]; then
-    log "Installing you-should-use..."
-    git clone https://github.com/MichaelAquilina/zsh-you-should-use.git "$you_should_use_dir"
-  else
-    log "you-should-use already installed."
-  fi
+  local name url plugin_dir
+  for name in "${!omz_plugins[@]}"; do
+    url="${omz_plugins[$name]}"
+    plugin_dir="${omz_custom}/plugins/${name}"
+    if [[ ! -d "$plugin_dir" ]]; then
+      log "Installing $name..."
+      git clone "$url" "$plugin_dir"
+    else
+      log "$name already installed."
+    fi
+  done
 }
 
 # --- Starship Setup ---
