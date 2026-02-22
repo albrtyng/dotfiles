@@ -40,7 +40,7 @@ export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
 eval "$(starship init zsh)"
 
 # navigation
-command -v zoxide &>/dev/null && alias cd='z'
+command -v zoxide &>/dev/null && [[ -z "$CLAUDECODE" ]] && alias cd='z'
 alias lg='lazygit'
 alias oops='fuck'
 eval "$(thefuck --alias)"
