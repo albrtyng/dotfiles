@@ -79,3 +79,4 @@ uv() {
     command uv "$@"
   fi
 }
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
