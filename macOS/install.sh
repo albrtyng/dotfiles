@@ -69,15 +69,21 @@ setup_ohmyzsh() {
   local omz_custom="${ZSH_CUSTOM:-${omz}/custom}"
   mkdir -p "$omz_custom"
 
-  local -A omz_plugins=(
-    [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions.git"
-    [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    [you-should-use]="https://github.com/MichaelAquilina/zsh-you-should-use.git"
+  local omz_plugins=(
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    you-should-use
+  )
+  local omz_urls=(
+    https://github.com/zsh-users/zsh-autosuggestions.git
+    https://github.com/zsh-users/zsh-syntax-highlighting.git
+    https://github.com/MichaelAquilina/zsh-you-should-use.git
   )
 
-  local name url plugin_dir
-  for name in "${!omz_plugins[@]}"; do
-    url="${omz_plugins[$name]}"
+  local i name url plugin_dir
+  for i in "${!omz_plugins[@]}"; do
+    name="${omz_plugins[$i]}"
+    url="${omz_urls[$i]}"
     plugin_dir="${omz_custom}/plugins/${name}"
     if [[ ! -d "$plugin_dir" ]]; then
       log "Installing $name..."
@@ -261,8 +267,10 @@ setup_dotfiles() {
   local dotdir_root
   dotdir_root="$(dirname "$DOTDIR")"
 
-  symlink_file "$DOTDIR/.zshrc" "$HOME/.zshrc"
+  symlink_file "$dotdir_root/.zshrc" "$HOME/.zshrc"
   symlink_file "$dotdir_root/.config/atuin/config.toml" "$HOME/.config/atuin/config.toml"
+  mkdir -p "$HOME/.config/opencode"
+  symlink_file "$dotdir_root/.config/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
 }
 
 # --- Claude Code ---

@@ -222,6 +222,8 @@ setup_dotfiles() {
   mkdir -p "$HOME/.config/delta"
   symlink_file "$dotdir/.config/delta/catppuccin.gitconfig" "$HOME/.config/delta/catppuccin.gitconfig"
   symlink_file "$dotdir/.config/atuin/config.toml" "$HOME/.config/atuin/config.toml"
+  mkdir -p "$HOME/.config/opencode"
+  symlink_file "$dotdir/.config/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
   symlink_file "$dotdir/.tmux.conf" "$HOME/.tmux.conf"
   symlink_file "$dotdir/.ruler" "$HOME/.ruler"
 }
