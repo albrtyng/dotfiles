@@ -22,6 +22,10 @@ elif [[ -f /usr/local/bin/brew ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
+# Mobile toolchains shared by every Git worktree.
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer"
+
 # nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"

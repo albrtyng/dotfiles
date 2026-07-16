@@ -227,12 +227,31 @@ setup_ghostty() {
 }
 
 # --- OpenCode ---
+setup_bun() {
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+
+  if ! command -v bunx >/dev/null 2>&1; then
+    log "Installing Bun..."
+    curl -fsSL https://bun.sh/install | bash
+  else
+    log "Bun already installed."
+  fi
+}
+
 setup_opencode() {
   if ! command -v opencode >/dev/null 2>&1; then
     log "Installing opencode..."
     curl -sL opencode.ai/install | bash
   else
     log "opencode already installed."
+  fi
+
+  if command -v bunx >/dev/null 2>&1; then
+    log "Installing compound-engineering plugin..."
+    bunx @every-env/compound-plugin install compound-engineering --to opencode
+  else
+    warn "bunx not found, skipping compound-engineering plugin installation"
   fi
 }
 
@@ -297,6 +316,7 @@ main() {
   setup_git
   setup_ruler
   setup_claude
+  setup_bun
   setup_opencode
   setup_dotfiles
   setup_ghostty
