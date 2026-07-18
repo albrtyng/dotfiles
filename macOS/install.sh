@@ -290,6 +290,9 @@ setup_dotfiles() {
   symlink_file "$dotdir_root/.config/atuin/config.toml" "$HOME/.config/atuin/config.toml"
   mkdir -p "$HOME/.config/opencode"
   symlink_file "$dotdir_root/.config/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
+  mkdir -p "$HOME/.kimi-code"
+  symlink_file "$dotdir_root/.kimi-code/config.toml" "$HOME/.kimi-code/config.toml"
+  symlink_file "$dotdir_root/.kimi-code/tui.toml" "$HOME/.kimi-code/tui.toml"
 }
 
 # --- Claude Code ---

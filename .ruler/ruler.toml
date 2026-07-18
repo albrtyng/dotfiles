@@ -2,7 +2,7 @@
 # See https://github.com/intellectronica/ruler for documentation.
 
 # Agents to generate rules for
-default_agents = ["cursor", "claude", "opencode", "kimi"]
+default_agents = ["cursor", "claude", "opencode"]
 
 # Enable nested rule loading from nested .ruler directories
 # nested = false
@@ -11,17 +11,13 @@ default_agents = ["cursor", "claude", "opencode", "kimi"]
 
 [agents.claude]
 enabled = true
-skills = true
 output_path = ".claude/CLAUDE.md"
 
 [agents.cursor]
 enabled = true
-skills = true
 
 [agents.opencode]
 enabled = true
-skills = true
 
 [agents.kimi]
 enabled = true
-skills = true

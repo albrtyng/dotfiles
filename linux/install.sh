@@ -245,6 +245,9 @@ setup_dotfiles() {
   symlink_file "$dotdir/.config/opencode/opencode.jsonc" "$HOME/.config/opencode/opencode.jsonc"
   symlink_file "$dotdir/.tmux.conf" "$HOME/.tmux.conf"
   symlink_file "$dotdir/.ruler" "$HOME/.ruler"
+  mkdir -p "$HOME/.kimi-code"
+  symlink_file "$dotdir/.kimi-code/config.toml" "$HOME/.kimi-code/config.toml"
+  symlink_file "$dotdir/.kimi-code/tui.toml" "$HOME/.kimi-code/tui.toml"
 }
 
 # --- Dev Tools ---
