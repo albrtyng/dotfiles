@@ -84,3 +84,6 @@ uv() {
   fi
 }
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# kimi-code
+export PATH="/Users/albertyang/.kimi-code/bin:$PATH"
